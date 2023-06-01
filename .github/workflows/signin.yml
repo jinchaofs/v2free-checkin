@@ -1,4 +1,4 @@
-name: "Airport Checkin"
+name: "V2free auto checkin"
 
 on:
   schedule:
