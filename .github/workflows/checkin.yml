@@ -2,7 +2,7 @@ name: "V2free auto checkin"
 
 on:
   schedule:
-    - cron: "0 24 * * *"  
+    - cron: "0 23 * * *"  
   workflow_dispatch:
 
 env:
