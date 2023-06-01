@@ -67,10 +67,11 @@ async function run() {
 }
 async function post_message_by_feishu(message) {
     const feishu_bot_url = process.env.FEISHU_BOT;
-    console.log("feishu bot:", feishu_bot_url);
+    
     if (!feishu_bot_url) {
         return;
     }
+    console.log("feishu bot:", feishu_bot_url);
     const data = {
         "msg_type": "text",
         "content": {

@@ -36,5 +36,6 @@ jobs:
           EMAIL: ${{ secrets.FREE_EMAIL }}
           PASSWORD: ${{ secrets.FREE_PASSWORD }}
           BASE_URL: ${{ secrets.FREE_BASE_URL }}
+          FEISHU_BOT: ${{ secrets.FEISHU_BOT }}
         run: |
           node ./main.js
