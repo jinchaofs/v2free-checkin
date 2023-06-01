@@ -1,17 +1,26 @@
 const puppeteer = require("puppeteer");
+const http = require("axios");
+const { default: axios } = require("axios");
 async function run() {
     const email = process.env.EMAIL;
     const password = process.env.PASSWORD;
     const base_url = process.env.BASE_URL || "https://cdn.v2free.net/";
+    
     console.log("email:", email);
     console.log("password:", password);
     console.log("base_url:", base_url);
+    if (!email || !password) {
+        console.error("用户名/密码缺失!");
+        return;
+    } 
     try {
+        console.log("=> 启动浏览器");
         const browser = await puppeteer.launch({
             headless: "new",
             defaultViewport: null,
             timeout: 100000
         });
+        console.log("=> 打开机场页面");
         const page = await browser.newPage();
         await page.goto(base_url);
         const loginLink = await page.$(`a[href="/auth/login"]`);
@@ -45,15 +54,35 @@ async function run() {
                 const buttonText = await page.$eval(".usercheck a.btn-brand", (btn) => btn.textContent.trim());
                 if (buttonText.includes("已签到")) {
                     console.log("=> 签到成功");
+                    await post_message_by_feishu(`机场签到成功：\n${base_url}`);
                 }
                 browser.close();
             }, 1000);
         }
-        
+
     } catch (error) {
         console.error(error);
         process.exit(0);
     }
 }
-
+async function post_message_by_feishu(message) {
+    const feishu_bot_url = process.env.FEISHU_BOT;
+    console.log("feishu bot:", feishu_bot_url);
+    if (!feishu_bot_url) {
+        return;
+    }
+    const data = {
+        "msg_type": "text",
+        "content": {
+          "text": message
+        }
+    }
+    try {
+        await axios.post(feishu_bot_url, data);
+        console.log("=> 飞书消息发送成功");
+    } catch (error) {
+        console.log("=> 飞书消息发送失败:");
+        console.error(error);
+    }
+}
 run();

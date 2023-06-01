@@ -2,7 +2,7 @@ name: "V2free auto checkin"
 
 on:
   schedule:
-    - cron: "0 22 * * *"  
+    - cron: "0 24 * * *"  
   workflow_dispatch:
 
 env:
@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout master
+      - name: Checkout main 
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
