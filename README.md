@@ -11,7 +11,7 @@
 | ------------ | ------------ | ------------ | ------------ |
 | FREE_EMAIL  | 是  | 机场注册邮箱  |  demo@gmail.com  |
 | FREE_PASSWORD  | 是  | 机场注册密码  | passxxxxx  |
-| FREE_BASE_URL  | 否  | 机场地址  | https://examplea.com  |
+| FREE_BASE_URL  | 否  | 机场地址  | https://cdn.v2free.net/  |
 | FEISHU_BOT  | 否  | 飞书机器人地址  |  https://open.feishu.cn/open-apis/bot/v2/hook/xxxxxx |
 
 3. 在仓库首页点击`Actions`，选择`V2free auto checkin`，点击右侧的`Run workflow`，运行一次之后。后续每天会自动执行一次。
