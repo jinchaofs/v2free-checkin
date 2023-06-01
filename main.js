@@ -1,8 +1,8 @@
 const puppeteer = require("puppeteer");
 async function run() {
-    const email = process.env.FREE_EMAIL;
-    const password = process.env.FREE_PASSWORD;
-    const base_url = process.env.FREE_BASE_URL || "https://cdn.v2free.net/";
+    const email = process.env.EMAIL;
+    const password = process.env.PASSWORD;
+    const base_url = process.env.BASE_URL || "https://cdn.v2free.net/";
     console.log("email:", email);
     console.log("password:", password);
     console.log("base_url:", base_url);
