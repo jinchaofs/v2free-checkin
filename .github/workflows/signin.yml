@@ -1,0 +1,40 @@
+name: "Airport Checkin"
+
+on:
+  schedule:
+    - cron: "0 22 * * *"  
+  workflow_dispatch:
+
+env:
+  RUN_ENV: 'prod'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout master
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node.js 
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16
+
+      - name: Random sleep
+        if: github.event_name == 'schedule'
+        run: sleep $(shuf -i 10-300 -n 1)
+
+      - name: Install dependencies
+        run: |
+          npm install
+
+      - name: Run signin
+        env:
+          EMAIL: ${{ secrets.EMAIL }}
+          PASSWORD: ${{ secrets.PASSWORD }}
+          BASE_URL: ${{ secrets.BASE_URL }}
+        run: |
+          node ./main.js
