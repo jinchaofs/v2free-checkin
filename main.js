@@ -5,14 +5,14 @@ async function run() {
     const email = process.env.EMAIL;
     const password = process.env.PASSWORD;
     const base_url = process.env.BASE_URL || "https://cdn.v2free.net/";
-    
+
     console.log("email:", email);
     console.log("password:", password);
     console.log("base_url:", base_url);
     if (!email || !password) {
         console.error("用户名/密码缺失!");
         return;
-    } 
+    }
     try {
         console.log("=> 启动浏览器");
         const browser = await puppeteer.launch({
@@ -51,14 +51,27 @@ async function run() {
             if (signinButton) {
                 signinButton.click();
                 console.log("=> 点击签到");
+            } else {
+                console.log("=> 没有获取到登录按钮，请重试");
             }
-            setTimeout(async () => {
-                const buttonText = await page.$eval(".usercheck a.btn-brand", (btn) => btn.textContent.trim());
-                if (buttonText.includes("已签到")) {
-                    console.log("=> 签到成功");
-                    await post_message_by_feishu(`机场签到成功：\n${base_url}`);
+            let flag = 0;
+            let interval = setInterval(async () => {
+                console.log("=> 检查是否已签到:", flag)
+                if (flag > 20) {
+                    clearInterval(interval);
+                    return;
                 }
-                browser.close();
+                try {
+                    const buttonText = await page.$eval(".usercheck a.btn-brand", (btn) => btn.textContent.trim());
+                    if (buttonText.includes("已签到")) {
+                        console.log("=> 签到成功");
+                        clearInterval(interval);
+                        await post_message_by_feishu(`机场签到成功：\n${base_url}`);
+                    }
+                    browser.close();
+                } catch (error) {
+                }
+                flag ++;
             }, 1000);
         }
 
@@ -69,7 +82,7 @@ async function run() {
 }
 async function post_message_by_feishu(message) {
     const feishu_bot_url = process.env.FEISHU_BOT;
-    
+
     if (!feishu_bot_url) {
         return;
     }
@@ -77,7 +90,7 @@ async function post_message_by_feishu(message) {
     const data = {
         "msg_type": "text",
         "content": {
-          "text": message
+            "text": message
         }
     }
     try {
