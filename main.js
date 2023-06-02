@@ -54,21 +54,17 @@ async function run() {
             console.log("=> 滚动到页面底部");
             await sleep(1000);
             console.log("=> 点击签到");
-            await page.click(".usercheck #checkin");
-            // const signinButton = await page.$(".usercheck #checkin");
-            // if (signinButton) {
-            //     signinButton.click();
-            //     console.log("=> 点击签到", JSON.stringify(await signinButton.jsonValue()));
-            // } else {
-            //     console.log("=> 没有获取到登录按钮，请重试");
-            // }
+            await page.evaluate(() => {
+                const targetElement = document.querySelector('.usercheck #checkin');
+                targetElement.click();
+            });
             let flag = 0;
             let interval = setInterval(async () => {
                 console.log("=> 检查是否已签到:", flag)
-                if (flag > 20) {
+                if (flag > 10) {
                     browser.close();
                     clearInterval(interval);
-                    return;
+                    throw "=> 签到失败";
                 }
                 try {
                     const buttonText = await page.$eval(".usercheck a.btn-brand", (btn) => btn.textContent.trim());
@@ -95,7 +91,7 @@ async function post_message_by_feishu(message) {
     if (!feishu_bot_url) {
         return;
     }
-    console.log("发送飞书消息:", feishu_bot_url);
+    console.log("=> 发送飞书消息:", feishu_bot_url);
     const data = {
         "msg_type": "text",
         "content": {
