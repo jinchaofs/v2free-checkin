@@ -1,6 +1,11 @@
 const puppeteer = require("puppeteer");
 const http = require("axios");
 const { default: axios } = require("axios");
+async function sleep(duration) {
+    return new Promise(resolve => {
+        setTimeout(resolve, duration);
+    })
+}
 async function run() {
     const email = process.env.EMAIL;
     const password = process.env.PASSWORD;
@@ -16,7 +21,7 @@ async function run() {
     try {
         console.log("=> 启动浏览器");
         const browser = await puppeteer.launch({
-            headless: "new",
+            headless: false, //"new",
             defaultViewport: null,
             timeout: 100000
         });
@@ -47,17 +52,21 @@ async function run() {
                 window.scrollTo(0, document.body.scrollHeight);
             });
             console.log("=> 滚动到页面底部");
-            const signinButton = await page.$(".usercheck #checkin");
-            if (signinButton) {
-                signinButton.click();
-                console.log("=> 点击签到");
-            } else {
-                console.log("=> 没有获取到登录按钮，请重试");
-            }
+            await sleep(1000);
+            console.log("=> 点击签到");
+            await page.click(".usercheck #checkin");
+            // const signinButton = await page.$(".usercheck #checkin");
+            // if (signinButton) {
+            //     signinButton.click();
+            //     console.log("=> 点击签到", JSON.stringify(await signinButton.jsonValue()));
+            // } else {
+            //     console.log("=> 没有获取到登录按钮，请重试");
+            // }
             let flag = 0;
             let interval = setInterval(async () => {
                 console.log("=> 检查是否已签到:", flag)
                 if (flag > 20) {
+                    browser.close();
                     clearInterval(interval);
                     return;
                 }
