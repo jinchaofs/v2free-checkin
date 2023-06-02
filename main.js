@@ -56,7 +56,9 @@ async function run() {
             console.log("=> 点击签到");
             await page.evaluate(() => {
                 const targetElement = document.querySelector('.usercheck #checkin');
-                targetElement.click();
+                if (targetElement) {
+                    targetElement.click();
+                }
             });
             let flag = 0;
             let interval = setInterval(async () => {
