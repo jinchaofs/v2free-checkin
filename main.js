@@ -47,9 +47,11 @@ async function run() {
                 window.scrollTo(0, document.body.scrollHeight);
             });
             console.log("=> 滚动到页面底部");
-            const signinButton = await page.$(".usercheck a.btn-brand");
-            signinButton.click();
-            console.log("=> 点击签到");
+            const signinButton = await page.$(".usercheck #checkin");
+            if (signinButton) {
+                signinButton.click();
+                console.log("=> 点击签到");
+            }
             setTimeout(async () => {
                 const buttonText = await page.$eval(".usercheck a.btn-brand", (btn) => btn.textContent.trim());
                 if (buttonText.includes("已签到")) {
@@ -71,7 +73,7 @@ async function post_message_by_feishu(message) {
     if (!feishu_bot_url) {
         return;
     }
-    console.log("feishu bot:", feishu_bot_url);
+    console.log("发送飞书消息:", feishu_bot_url);
     const data = {
         "msg_type": "text",
         "content": {
