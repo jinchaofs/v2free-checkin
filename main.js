@@ -21,7 +21,7 @@ async function run() {
     try {
         console.log("=> 启动浏览器");
         const browser = await puppeteer.launch({
-            headless: false, //"new",
+            headless: "new",
             defaultViewport: null,
             timeout: 100000
         });
