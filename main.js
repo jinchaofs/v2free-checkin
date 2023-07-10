@@ -73,12 +73,18 @@ async function run() {
                     if (buttonText.includes("已签到")) {
                         console.log("=> 签到成功");
                         clearInterval(interval);
-                        await post_message_by_feishu(`机场签到成功：\n${base_url}`);
+                        const last = await page.$("#account-status .nodemain .nodename:first-child");
+                        let lastCount = "";
+                        if (last) {
+                            lastCount = last.textContent.trim();
+                            console.log(`=> ${lastCount}`);
+                        }
+                        await post_message_by_feishu(`机场签到成功：\n${base_url}\n${lastCount}`);
                     }
                     browser.close();
                 } catch (error) {
                 }
-                flag ++;
+                flag++;
             }, 1000);
         }
 
@@ -93,7 +99,7 @@ async function post_message_by_feishu(message) {
     if (!feishu_bot_url) {
         return;
     }
-    console.log("=> 发送飞书消息:", feishu_bot_url);
+    console.log("=> 发送飞书消息: ", message);
     const data = {
         "msg_type": "text",
         "content": {
