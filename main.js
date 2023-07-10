@@ -9,7 +9,7 @@ async function sleep(duration) {
 async function run() {
     const email = process.env.EMAIL;
     const password = process.env.PASSWORD;
-    const base_url = process.env.BASE_URL || "https://cdn.v2free.net/";
+    const base_url = process.env.BASE_URL;
 
     console.log("email:", email);
     console.log("password:", password);
@@ -48,10 +48,10 @@ async function run() {
             console.log("=> 点击登录");
             await page.waitForNavigation();
             console.log("=> 进入首页");
-            await page.evaluate(() => {
-                window.scrollTo(0, document.body.scrollHeight);
-            });
-            console.log("=> 滚动到页面底部");
+            // await page.evaluate(() => {
+            //     window.scrollTo(0, document.body.scrollHeight);
+            // });
+            // console.log("=> 滚动到页面底部");
             await sleep(1000);
             console.log("=> 点击签到");
             await page.evaluate(() => {
@@ -73,12 +73,9 @@ async function run() {
                     if (buttonText.includes("已签到")) {
                         console.log("=> 签到成功");
                         clearInterval(interval);
-                        const last = await page.$("#account-status .nodemain .nodename:first-child");
-                        let lastCount = "";
-                        if (last) {
-                            lastCount = last.textContent.trim();
-                            console.log(`=> ${lastCount}`);
-                        }
+                        console.log("=> 获取剩余流量")
+                        const lastCount = await page.$eval("#account-status .nodemain .nodename:first-child", ele => ele.textContent.trim()) || "";
+                        console.log("=>", lastCount);
                         await post_message_by_feishu(`机场签到成功：\n${base_url}\n${lastCount}`);
                     }
                     browser.close();
@@ -89,7 +86,8 @@ async function run() {
         }
 
     } catch (error) {
-        console.error(error);
+        console.error(error.message);
+        await post_message_by_feishu(error.message);
         process.exit(0);
     }
 }
