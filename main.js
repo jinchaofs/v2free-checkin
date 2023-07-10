@@ -9,7 +9,7 @@ async function sleep(duration) {
 async function run() {
     const email = process.env.EMAIL;
     const password = process.env.PASSWORD;
-    const base_url = process.env.BASE_URL;
+    const base_url = process.env.BASE_URL || "https://cdn.v2free.net/";
 
     console.log("email:", email);
     console.log("password:", password);
